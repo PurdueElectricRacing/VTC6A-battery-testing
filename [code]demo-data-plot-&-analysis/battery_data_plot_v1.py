@@ -4,10 +4,9 @@ import matplotlib.pyplot as plt
 
 ###40000 till 100000
 
-reader = pd.read_csv(r'10-13/2021-10-14-8-33-31-EBC-A20-1-1.csv')
-df = pd.DataFrame(reader, columns=['Time(S)', 'Cur(A)', 'Vol(V)'])
+reader = pd.read_csv(r'../early-testing-&-demo-data/VTC6 RPT.csv')
+df = pd.DataFrame(reader, columns=['test_time', 'voltage', 'current'])
 data = df.to_numpy()
-print(data)
 
 top = np.where(data[:, 0] > 100000)[0][0]
 #bottom = np.where(data[:, 0] > 40000)[0][0]  ### finding the needed points

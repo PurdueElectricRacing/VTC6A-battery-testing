@@ -7,13 +7,13 @@ from sklearn.metrics import mean_squared_error
 
 ### overview: crop from 44884 till 45500
 
-reader = pd.read_csv(r'VTC6 RPT.csv')
+reader = pd.read_csv(r'../early-testing-&-demo-data/VTC6 RPT.csv')
 df = pd.DataFrame(reader, columns=['test_time', 'voltage', 'current'])
 data = df.to_numpy()
 
 top = np.where(data[:, 0] > 45500)[0][0] # original crop: 48400
 #bottom = np.where(data[:, 0] > 40000)[0][0]  ### finding the needed points
-bottom = np.where(data[:, 0] > 44884)[0][0]  ### finding the needed points
+bottom = np.where(data[:, 0] > 44535)[0][0]  ### finding the needed points, original = 44884
 
 data = data[bottom:top, :]  ### slicing the requireed dataset
 
