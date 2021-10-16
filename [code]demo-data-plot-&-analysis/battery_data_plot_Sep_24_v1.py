@@ -5,10 +5,10 @@ from matplotlib.ticker import FuncFormatter
 
 # overview: plot OCV vs SOC curve for output first mini BMS data
 
-with open("VTC6A_32+_Chg.csv") as f:
+with open("../early-testing-&-demo-data/VTC6A_32+_Chg.csv") as f:
     print(f)
 
-reader = pd.read_csv(r'VTC6A_32+_Chg.csv', header=10, encoding = 'UTF-8')
+reader = pd.read_csv(r'../early-testing-&-demo-data/VTC6A_32+_Chg.csv', header=10, encoding ='UTF-8')
 print(reader)
 df = pd.DataFrame(reader, columns=['Time(S)', 'Cur(A)', 'Vol(V)'])
 print(df)

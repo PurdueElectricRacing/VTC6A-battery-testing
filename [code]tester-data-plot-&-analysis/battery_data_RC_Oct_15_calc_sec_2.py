@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error
 
 ### overview: manually set range of exponential curve to get RC constant
 
-reader = pd.read_csv(r'10-13/equiv-circuit-1st-part-2021-10-14-8-33-31-EBC-A20-1-1.csv', header=22, encoding = 'UTF-8')
+reader = pd.read_csv(r'../tester-data/10-13/equiv-circuit-1st-part-2021-10-14-8-33-31-EBC-A20-1-1.csv', header=22, encoding ='UTF-8')
 print(reader)
 df = pd.DataFrame(reader, columns=['Time(S)', 'Cur(A)', 'Vol(V)'])
 print(df)
@@ -15,20 +15,10 @@ data = df.to_numpy()
 
 delta_i = 2 # (A)
 
-top = np.where(data[:, 0] > 16949)[0][0] # original crop: 48400
+top = np.where(data[:, 0] > 3220)[0][0] # original crop: 48400
 #bottom = np.where(data[:, 0] > 40000)[0][0]  ### finding the needed points
-bottom = np.where(data[:, 0] > 16248)[0][0]  ### finding the needed points, original = 44884
+bottom = np.where(data[:, 0] > 2556)[0][0]  ### finding the needed points, original = 44884
 v_top = data[top, 2]
-
-# section top and bottom
-# 1: 400, 480
-# 2: 2556, 3220
-# 3: 5000, 5333
-# 4: 6847, 7494
-# 5: 14080, 14262
-# 6: 16248, 16949
-# 7: 18555, 19218
-# 8: 20311, 21137
 
 data = data[bottom:top, :]  ### slicing the requireed dataset
 data = data.T  ###transpose
@@ -79,7 +69,6 @@ rising_data = data[2, i+1:]
 start_voltage = rising_data[0] - 1
 
 data_adjusted = data[0, i+1:]
-
 
 def func1(x_input, a, b, c):
     return a*np.exp(-c*(x_input-rise_time))+b

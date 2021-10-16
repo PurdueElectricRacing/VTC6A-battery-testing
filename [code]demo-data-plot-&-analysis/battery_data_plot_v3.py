@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 ###40000 till 100000
 
-reader = pd.read_csv(r'VTC6 RPT.csv')
+reader = pd.read_csv(r'../early-testing-&-demo-data/VTC6 RPT.csv')
 df = pd.DataFrame(reader, columns=['test_time', 'voltage', 'current'])
 data = df.to_numpy()
 
