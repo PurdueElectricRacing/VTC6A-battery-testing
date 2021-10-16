@@ -6,6 +6,7 @@ from scipy.optimize import curve_fit
 from sklearn.metrics import mean_squared_error
 
 ### overview: manually set range of exponential curve to get RC constant
+# fit: exponetial fixed in starting voltage and infinite voltage
 
 
 reader = pd.read_csv(r'../tester-data/10-15/2021-10-15-17-42-11-EBC-A20-1-1-lower-voltage-equi-circuit.csv', header=14, encoding ='UTF-8')
@@ -16,8 +17,8 @@ data = df.to_numpy()
 
 delta_i = 2 # (A)
 
-bottom = np.where(data[:, 0] > 13068)[0][0]  ### finding the needed points, original = 44884
-top = np.where(data[:, 0] > 15522)[0][0] # original crop: 48400
+bottom = np.where(data[:, 0] > 5395)[0][0]  ### finding the needed points, original = 44884
+top = np.where(data[:, 0] > 7736)[0][0] # original crop: 48400
 v_top = data[top, 2]
 
 # section top and bottom
@@ -79,13 +80,14 @@ start_voltage = rising_data[0] - 1
 data_adjusted = data[0, i+1:]
 
 
-def func1(x_input, a, b, c):
-    return a*np.exp(-c*(x_input - rise_time))+b
+def func1(x_input, c):
+    return (v_0 - v_top)*np.exp(-c*(x_input - rise_time)) + v_top
 
-popt, pcov = curve_fit(func1, data_adjusted, rising_data, p0 = [0, 3, 0])
+
+popt, pcov = curve_fit(func1, data_adjusted, rising_data, p0 = [0])
 voltage_est = func1(data_adjusted, *popt)
 voltage_est_MSE = mean_squared_error(rising_data, voltage_est)
-r1c1_est = 1/popt[2]
+r1c1_est = 1/popt[0]
 
 plt.plot(data_adjusted, rising_data, 'r.')
 plt.plot(data_adjusted, voltage_est, 'b')
