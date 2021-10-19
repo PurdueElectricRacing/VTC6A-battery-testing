@@ -7,6 +7,7 @@ from sklearn.metrics import mean_squared_error
 
 ### overview: manually set range of exponential curve to get RC constant
 # fit: exponetial fixed in starting voltage and infinite voltage
+# 123 test
 
 
 reader = pd.read_csv(r'../tester-data/10-15/2021-10-15-17-42-11-EBC-A20-1-1-lower-voltage-equi-circuit.csv', header=14, encoding ='UTF-8')
