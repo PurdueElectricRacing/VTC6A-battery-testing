@@ -1,3 +1,4 @@
+import numpy
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -81,9 +82,13 @@ SOC_percentage_dis_2, OCV_begin_to_cutoff_dis_2 = discharge_OCV_vs_SOC_plot_prep
 
 #   plot OCV vs SOC
 fig3, ax3 = plt.subplots()
-ax3.plot(SOC_percentage_dis, OCV_begin_to_cutoff_dis, color=color_blue, label="0.15A discharge curve")
-ax3.plot(SOC_percentage_charge, OCV_begin_to_cutoff_charge, color=color_green, label="0.15A charge curve")
-ax3.plot(SOC_percentage_dis_2, OCV_begin_to_cutoff_dis_2, color='c', label="0.10A discharge curve")
+#ax3.plot(SOC_percentage_dis, OCV_begin_to_cutoff_dis, color=color_blue, label="0.15A discharge curve")
+#ax3.plot(SOC_percentage_charge, OCV_begin_to_cutoff_charge, color=color_green, label="0.15A charge curve")
+#ax3.plot(SOC_percentage_dis_2, OCV_begin_to_cutoff_dis_2, color='c', label="0.10A discharge curve")
+ax3.scatter(SOC_percentage_dis, OCV_begin_to_cutoff_dis, s=0.5, color=color_blue, label="0.15A discharge curve")
+ax3.scatter(SOC_percentage_charge, OCV_begin_to_cutoff_charge, s=0.5, color=color_green, label="0.15A charge curve")
+ax3.scatter(SOC_percentage_dis_2, OCV_begin_to_cutoff_dis_2, s=0.5, color='c', label="0.10A discharge curve")
+
 ax3.xaxis.set_major_formatter(FuncFormatter('{0:.0%}'.format))
 ax3.set_title("OCV vs SOC (charge & discharge)")
 ax3.set_xlabel('SOC')
@@ -91,7 +96,18 @@ ax3.set_ylabel('OCV (V)')
 ax3.legend()
 
 #   trying to fit a polynomial to OCV vs SOC
-# OCV_polynomial = np.poly1d(np.polyfit(SOC_percentage, OCV_begin_to_cutoff, 20))
-# ax3.plot(SOC_percentage, OCV_polynomial(SOC_percentage), color=color_red)
+OCV_dis_polynomial = np.poly1d(np.polyfit(SOC_percentage_dis, OCV_begin_to_cutoff_dis, 40))
+ax3.plot(SOC_percentage_dis, OCV_dis_polynomial(SOC_percentage_dis), color=color_red)
+OCV_charge_polynomial = np.poly1d(np.polyfit(SOC_percentage_charge, OCV_begin_to_cutoff_charge, 40))
+ax3.plot(SOC_percentage_charge, OCV_charge_polynomial(SOC_percentage_charge), color=color_red)
 
 plt.show()
+
+# hysteresis testing pre-calc
+SOC_target = np.linspace(0,1,num=11)
+print(SOC_target)
+OCV_dis_target = OCV_dis_polynomial(SOC_target)
+OCV_charge_target = OCV_charge_polynomial(SOC_target)
+
+print("OCV_dis_target = ", OCV_dis_target)
+print("OCV_charge_target = ", OCV_charge_target)
