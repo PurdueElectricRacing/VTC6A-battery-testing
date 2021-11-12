@@ -4,10 +4,12 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 # overview: plot OCV vs SOC curve for output first mini BMS data
+# use: visualize the full timeline testing
 
 
 # reader = pd.read_csv(r'10-13/equiv-circuit-1st-part-2021-10-14-8-33-31-EBC-A20-1-1.csv', header=22, encoding = 'UTF-8')
-reader = pd.read_csv(r'../tester-data/10-15/2021-10-15-17-42-11-EBC-A20-1-1-lower-voltage-equi-circuit.csv', header=14, encoding ='UTF-8')
+# reader = pd.read_csv(r'../tester-data/10-15/2021-10-15-17-42-11-EBC-A20-1-1-lower-voltage-equi-circuit.csv', header=14, encoding ='UTF-8')
+reader = pd.read_csv(r'../tester-data/11-7/2021-11-8-8-0-56-EBC-A20-1-1-high-range-40min.csv', header=10, encoding='UTF-8')
 print(reader)
 df = pd.DataFrame(reader, columns=['Time(S)', 'Cur(A)', 'Vol(V)'])
 print(df)
