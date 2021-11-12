@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error
 # data range: lower voltage range
 
 
-reader = pd.read_csv(r'../tester-data/10-15/2021-10-15-17-42-11-EBC-A20-1-1-lower-voltage-equi-circuit.csv', header=14, encoding ='UTF-8')
+reader = pd.read_csv(r'../tester-data/11-7/2021-11-8-8-0-56-EBC-A20-1-1-high-range-40min.csv', header=10, encoding ='UTF-8')
 print(reader)
 df = pd.DataFrame(reader, columns=['Time(S)', 'Cur(A)', 'Vol(V)'])
 print(df)
@@ -18,16 +18,16 @@ data = df.to_numpy()
 
 delta_i = 2 # (A)
 
-bottom = np.where(data[:, 0] > 5395)[0][0]  ### finding the needed points, original = 44884
-top = np.where(data[:, 0] > 7736)[0][0] # original crop: 48400
+bottom = np.where(data[:, 0] > 4792)[0][0]  ### finding the needed points, original = 44884
+top = np.where(data[:, 0] > 5656)[0][0] # original crop: 48400
 v_top = data[top, 2]
 
 # section top and bottom
-# 1: 2541, 4830
-# 2: 5395, 7736
-# 3: 8119, 10508
-# 4: 10621, 13000
-# 5: 13068, 15522
+# 1: 1033, 2000
+# 2: 4792, 5656
+# 3:
+# 4:
+# 5:
 
 data = data[bottom:top, :]  ### slicing the requireed dataset
 data = data.T  ###transpose

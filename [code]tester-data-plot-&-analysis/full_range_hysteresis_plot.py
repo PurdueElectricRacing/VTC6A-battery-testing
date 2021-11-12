@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 # overview: plot OCV vs SOC curve for output first mini BMS data
+# TODO: divid the full capacity time and place each charge/discharge cycle
+#  in the correct location of the SOC plot
 
 def read_low_current_discharge_and_charge(csv_name):
     reader = pd.read_csv(csv_name, header=10, encoding ='UTF-8')
@@ -19,15 +21,49 @@ full_discharge_time = 107744 # (s)
 
 total_data = read_low_current_discharge_and_charge(r'../tester-data/10-22/2021-10-27-19-38-32-EBC-A20-1-1_hysteresis.csv')
 
-charge_data_0_to_90 = total_data[:, (np.where(total_data[0, :] == 95442)[0][0]):(np.where(total_data[0, :] == 172278)[0][0])]
-discharge_data_90_to_10 = total_data[:, (np.where(total_data[0, :] == 177352)[0][0]):(np.where(total_data[0, :] == 254022)[0][0])]
-charge_data_10_to_80 = total_data[:, (np.where(total_data[0, :] == 254022)[0][0]):(np.where(total_data[0, :] == 314828)[0][0])]
-discharge_data_80_to_20 = total_data[:, (np.where(total_data[0, :] == 316626)[0][0]):(np.where(total_data[0, :] == 373273)[0][0])]
+time_sheet = np.array([[95442, 172278], [177352, 254022], [254022, 314828], [316626, 373273], [373273, 412682], [412754, 445245],
+                       [445245, 469996], [479665, 490782], [490782, 498115]])
+
+current_index_start = np.where(total_data[0, :] == time_sheet[0][0])[0][0]
+current_index_end = np.where(total_data[0, :] == time_sheet[0][1])[0][0]
+charge_data_0_to_90 = total_data[:, current_index_start:current_index_end]
+current_time_data = total_data[0, current_index_start:current_index_end]
+print(current_time_data)
+print(current_time_data[0])
+SOC_0_to_90 = 0.9 * ((current_time_data - current_time_data[0])/(total_data[0, current_index_end] - total_data[0, current_index_start]))
+#SOC_0_to_90 = 0.9 * ((current_time_data)/(total_data[0, current_index_end] - total_data[0, current_index_start]))
+#SOC_0_to_90 = 0.9 * np.arange(172278 - 95442)/(172278 - 95442)
+
+current_index_start = np.where(total_data[0, :] == time_sheet[1][0])[0][0]
+current_index_end = np.where(total_data[0, :] == time_sheet[1][1])[0][0]
+discharge_data_90_to_10 = total_data[:, current_index_start:current_index_end]
+current_time_data = total_data[0, current_index_start:current_index_end]
+print(current_time_data)
+print(current_time_data[0])
+SOC_90_to_10 = 0.9 - 0.8 * ((current_time_data - current_time_data[0])/(total_data[0, current_index_end] - total_data[0, current_index_start]))
+
+current_index_start = np.where(total_data[0, :] == time_sheet[2][0])[0][0]
+current_index_end = np.where(total_data[0, :] == time_sheet[2][1])[0][0]
+charge_data_10_to_80 = total_data[:, current_index_start:current_index_end]
+current_time_data = total_data[0, current_index_start:current_index_end]
+print(current_time_data)
+print(current_time_data[0])
+SOC_10_to_80 = 0.1 + 0.7 * ((current_time_data - current_time_data[0])/(total_data[0, current_index_end] - total_data[0, current_index_start]))
+
+current_index_start = np.where(total_data[0, :] == time_sheet[3][0])[0][0]
+current_index_end = np.where(total_data[0, :] == time_sheet[3][1])[0][0]
+discharge_data_80_to_20 = total_data[:, current_index_start:current_index_end]
+current_time_data = total_data[0, current_index_start:current_index_end]
+print(current_time_data)
+print(current_time_data[0])
+SOC_80_to_20 = 0.8 - 0.6 * ((current_time_data - current_time_data[0])/(total_data[0, current_index_end] - total_data[0, current_index_start]))
+
 charge_data_20_to_70 = total_data[:, (np.where(total_data[0, :] == 373273)[0][0]):(np.where(total_data[0, :] == 412682)[0][0])]
 discharge_data_70_to_30 = total_data[:, (np.where(total_data[0, :] == 412754)[0][0]):(np.where(total_data[0, :] == 445245)[0][0])]
 charge_data_30_to_60 = total_data[:, (np.where(total_data[0, :] == 445245)[0][0]):(np.where(total_data[0, :] == 469996)[0][0])]
 discharge_data_60_to_40 = total_data[:, (np.where(total_data[0, :] == 470665)[0][0]):(np.where(total_data[0, :] == 490782)[0][0])]
 charge_data_40_to_50 = total_data[:, (np.where(total_data[0, :] == 490782)[0][0]):(np.where(total_data[0, :] == 498115)[0][0])]
+
 
 fig, ax1 = plt.subplots()
 
@@ -86,7 +122,6 @@ def charge_OCV_vs_SOC_plot_prep(data):
 
     return SOC_percentage, OCV_begin_to_cutoff
 
-SOC_percentage_dis, OCV_begin_to_cutoff_dis = discharge_OCV_vs_SOC_plot_prep(discharge_data)
 
 
 #   plot OCV vs SOC
@@ -94,12 +129,18 @@ fig3, ax3 = plt.subplots()
 #ax3.plot(SOC_percentage_dis, OCV_begin_to_cutoff_dis, color=color_blue, label="0.15A discharge curve")
 #ax3.plot(SOC_percentage_charge, OCV_begin_to_cutoff_charge, color=color_green, label="0.15A charge curve")
 #ax3.plot(SOC_percentage_dis_2, OCV_begin_to_cutoff_dis_2, color='c', label="0.10A discharge curve")
-ax3.scatter(SOC_percentage_dis, OCV_begin_to_cutoff_dis, s=0.5, color=color_blue, label="0.15A discharge curve")
+print(len(charge_data_0_to_90[2,:]))
+print(len(SOC_0_to_90))
+ax3.scatter(SOC_0_to_90, charge_data_0_to_90[2,:], s=0.5, color='b', label="0% to 90% charge")
+ax3.scatter(SOC_90_to_10, discharge_data_90_to_10[2,:], s=0.5, color='r', label="90% to 10% discharge")
+ax3.scatter(SOC_10_to_80, charge_data_10_to_80[2,:], s=0.5, color='c', label="10% to 80% charge")
+ax3.scatter(SOC_80_to_20, discharge_data_80_to_20[2,:], s=0.5, color='g', label="80% to 20% discharge")
 
 ax3.xaxis.set_major_formatter(FuncFormatter('{0:.0%}'.format))
 ax3.set_title("OCV vs SOC (charge & discharge)")
 ax3.set_xlabel('SOC')
 ax3.set_ylabel('OCV (V)')
 ax3.legend()
+plt.show()
 
 
